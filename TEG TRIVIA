@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trivia TEG & Platelet Mapping</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 600px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #0077cc;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .correct {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .wrong {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .score {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="quiz">
+    <h2 id="question">Pregunta cargando...</h2>
+    <div id="answers"></div>
+    <div id="feedback"></div>
+    <div class="score" id="score">Puntuación: 0</div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "¿Qué mide el canal ADP en Platelet Mapping?",
+        answers: [
+          "El efecto del ácido tranexámico",
+          "La activación del receptor P2Y12",
+          "El nivel de fibrinógeno funcional",
+          "La inhibición del receptor del tromboxano"
+        ],
+        correct: 1
+      },
+      {
+        question: "¿Cuál de los siguientes es un activador del canal AA?",
+        answers: [
+          "Difosfato de adenosina",
+          "Ácido araquidónico",
+          "Kaolín con heparinasa",
+          "Activador F"
+        ],
+        correct: 1
+      },
+      {
+        question: "¿Qué indica un LY30 > 3% en el TEG?",
+        answers: [
+          "Coagulación acelerada",
+          "Hipofibrinogenemia",
+          "Hiperfibrinólisis",
+          "Función plaquetaria normal"
+        ],
+        correct: 2
+      },
+      {
+        question: "¿Con qué hemoderivado se debe tener precaución al usar ácido tranexámico?",
+        answers: [
+          "Plaquetas",
+          "Plasma fresco congelado",
+          "Concentrado de fibrinógeno",
+          "Concentrado de complejo protrombínico (CCP)"
+        ],
+        correct: 3
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = questions[current];
+      document.getElementById("question").innerText = q.question;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      document.getElementById("feedback").innerHTML = "";
+
+      q.answers.forEach((answer, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => checkAnswer(index);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const q = questions[current];
+      const feedback = document.getElementById("feedback");
+
+      if (selected === q.correct) {
+        score++;
+        feedback.innerHTML = "✅ <strong>¡Correcto!</strong>";
+        feedback.className = "correct";
+      } else {
+        feedback.innerHTML = `❌ <strong>Incorrecto.</strong> La respuesta correcta es: <em>${q.answers[q.correct]}</em>`;
+        feedback.className = "wrong";
+      }
+
+      document.getElementById("score").innerText = `Puntuación: ${score}`;
+
+      setTimeout(() => {
+        current++;
+        if (current < questions.length) {
+          loadQuestion();
+        } else {
+          document.getElementById("quiz").innerHTML = `
+            <h2>Trivia completada 🧠</h2>
+            <p class='score'>Puntuación final: ${score}/${questions.length}</p>
+            <p>¡Gracias por participar! 🎉</p>
+          `;
+        }
+      }, 2000);
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
